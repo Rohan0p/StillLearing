@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
     // 0-x
     //1-o
     //2=null
+    boolean gameActive=false;
         int ActivePlayer=0;
         int[] GameState={2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 };
     //taking advantage of limited wining position
@@ -19,20 +23,61 @@ public class MainActivity extends AppCompatActivity {
     public void Tap(View view ){
         ImageView img = (ImageView) view;
         int TappedImage= Integer.parseInt(img.getTag().toString());
+        if(!gameActive){
+            gameReset(view);
+        }
         if(GameState[TappedImage]==2){
             GameState[TappedImage]=ActivePlayer;
             img.setTranslationY(-1000f);
             if (ActivePlayer==0){
                 img.setImageResource(R.drawable.x);
                 ActivePlayer=1;
+                TextView status= findViewById(R.id.Status);
+                status.setText("O's turn tap to play");
             }
             else{
                 img.setImageResource(R.drawable.o);
                 ActivePlayer=0;
+                TextView status= findViewById(R.id.Status);
+                status.setText("X's turn tap to play");
             }
             img.animate().translationYBy(1000f).setDuration(300);
+        }
+        String result;
+        // checking if any player won or not
+        for(int[] winp:winPostions){
+            if(GameState[winp[0]]==GameState[winp[1]]&&
+                    GameState[winp[1]]==GameState[winp[2]] && GameState[winp[0]]!=2){
+                //won
+                gameActive=false;
+
+
+                if(GameState[winp[0]]==0){
+                    result="X WON";
+                }
+                else{
+                    result="O WON";
+                }
+                TextView ShowingResult = findViewById(R.id.ForResult);
+                ShowingResult.setText(result);
+                return;
+            }
 
         }
+    }
+    public void gameReset(View view){
+        gameActive=true;
+        ActivePlayer=0;
+        int[] GameState={2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 };
+        ((ImageView)findViewById(R.id.imageView0)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView1)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView2)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView3)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView4)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView5)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView6)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView7)).setImageResource(0);
+        ((ImageView)findViewById(R.id.imageView8)).setImageResource(0);
 
     }
 
